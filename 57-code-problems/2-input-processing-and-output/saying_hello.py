@@ -19,3 +19,7 @@ Data Structures, on page 63.
 """
 
 #write the code solution here
+
+name = input('Type in your name: ')
+greet = f'Hello, {name}'
+print(greet)

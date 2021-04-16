@@ -1,0 +1,14 @@
+body {
+    padding-top: 230px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 440px;
+}
+
+p {
+  padding: 20px 20px 15px 5px;
+}
+
+.span {
+    margin-top: 50px;
+}
