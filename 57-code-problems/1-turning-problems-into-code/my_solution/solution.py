@@ -27,8 +27,21 @@
     :param print(calculate_total_bill)
 
 """
+class MyOwnSolution:    
+    # bill_amount = input("Enter the bill amount: ")
+    # tip_rate = input("Enter the tip rate: ")
 
-import unittest
+    def __init__(self, tip_rate, bill_amount):
+        self.calculate_tip = float(bill_amount) * int(tip_rate) / 100
+        self.calculate_total_bill = bill_amount + self.calculate_tip
 
+    def tip(self):
+        return f"{f'${self.calculate_tip:0.2f}'}"
 
-class Test
+    def total_bill(self):
+        return f"{f'${self.calculate_total_bill:0.2f}'}"
+
+if __name__ == '__main__':
+    computation = MyOwnSolution(10, 350.00)
+    print(computation.tip())
+    print(computation.total_bill())
