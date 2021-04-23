@@ -31,8 +31,8 @@ class MyOwnSolution:
     # bill_amount = input("Enter the bill amount: ")
     # tip_rate = input("Enter the tip rate: ")
 
-    def __init__(self, tip_rate, bill_amount):
-        self.calculate_tip = float(bill_amount) * int(tip_rate) / 100
+    def __init__(self, tip_rate: int, bill_amount: float):
+        self.calculate_tip = bill_amount * tip_rate / 100
         self.calculate_total_bill = bill_amount + self.calculate_tip
 
     def tip(self):
