@@ -29,3 +29,7 @@
 - https://www.youtube.com/watch?v=bD-jiNO5ZVI&list=PLbpAWbHbi5rM736O4ivIfedpetuRFMB9U&index=2
 
 - https://github.com/TheDumbfounds/django-design-patterns-initial
+
+- https://docs.djangoproject.com/en/3.2/
+
+- https://docs.djangoproject.com/en/3.2/topics/http/urls/
