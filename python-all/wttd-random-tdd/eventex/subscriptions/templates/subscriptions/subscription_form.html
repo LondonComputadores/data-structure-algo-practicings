@@ -6,7 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<body>
+<body>    
     <h1>Subscription Form</h1>
+    <form action="." method="post">
+        {% csrf_token %}
+        <input type="text" name="name" id="">
+        <input type="text" name="cpf" id="">
+        <input type="email" name="email" id="">
+        <input type="text" name="tel" id="">
+        <input type="submit" value="Enviar">
+    </form>
 </body>
 </html>

@@ -32,7 +32,7 @@ class Post(Postable):
     body = models.TextField()
 
 
-# V2
+# V2 
 
 # class BookManager(models.Manager):
 

@@ -4,7 +4,7 @@ from django.http import HttpResponse
 
 # CLASS BASED VIEWS
 
-# V1
+# V1, V4
 
 from .models import Book
 from django.views.generic import ListView
@@ -16,20 +16,21 @@ class BookListView(ListView):
     model = Book
     context_object_name = 'books'
 
-# @login_required
-def book_detail(request, slug):
+    # @login_required
+    def book_detail(request, slug):
+        """ Isso era uma function mas transformei em Método"""
 
-    if request.method == 'GET':
-        return HttpResponse("detail view")
+        if request.method == 'GET':
+            return HttpResponse("detail view")
 
-    elif request.method == 'POST':
-        return HttpResponse("add view")
+        elif request.method == 'POST':
+            return HttpResponse("add view")
 
-    elif request.method == 'PUT':
-        return HttpResponse("edit view")    
+        elif request.method == 'PUT':
+            return HttpResponse("edit view")    
 
-    elif request.method == 'DELETE':
-        return HttpResponse("delete view")
+        elif request.method == 'DELETE':
+            return HttpResponse("delete view")
 
 ###############################################################################
 
