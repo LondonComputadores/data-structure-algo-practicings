@@ -1,0 +1,11 @@
+Starting from the begin
+
+1. Download and install the free SQL Server 2022 Developer or the latest one
+  > https://go.microsoft.com/fwlink/p/?linkid=2215158&clcid=0x416&culture=pt-br&country=br
+
+2. Copy the server name to paste it on the SSMS and it looks like this:
+  > DESKTOP-D6FEAAE
+
+
+3. Baixar o SQL Server Management Studio (SSMS)
+  > https://aka.ms/ssmsfullsetup
