@@ -1,0 +1,75 @@
+Conceitos JavaScript ReactJS
+
+Component:
+
+Uma função que retorna HTML
+
+ex.:
+
+
+
+function App() {
+  return (
+   ...
+  )
+}
+
+
+ou
+
+... em Post.jsx...
+
+export function Post(props) {
+    return (
+        <div>
+            <strong>{props.author}</strong>
+            <p>{props.content}</p>
+            <p>{props.separator}</p>
+        </div>
+    )
+}
+
+... que exporta para App.jsx...
+
+import {Post} from './Post';
+
+export function App() {
+  return (
+    <div>
+     <Post
+      author="Alexandre Paes"
+      content="Any simple text"
+      separator="-----------------------------------------"
+     />
+     <Post
+      author="Alex Monteiro"
+      content="Any simple text once again"
+      separator="-----------------------------------------"
+     />
+    </div>
+  )
+}
+
+... e que main.jsx importa { App } from './App'...
+
+
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import {App} from './App'
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+)
+
+----------------------------------------------------------------------------------------------------------------------
+
+Propriedade:
+
+
+
+
+
+
+

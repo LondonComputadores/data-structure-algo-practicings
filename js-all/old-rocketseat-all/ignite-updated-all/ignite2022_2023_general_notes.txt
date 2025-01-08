@@ -1,0 +1,2282 @@
+ Conceitos JavaScript ReactJS
+ 
+ Projeto 01:
+ 
+- Iniciando com React 
+
+ > Fundamentos do ReactJS:
+
+  -> SSR (Server Side Rendering) = back + front end > Browser
+  -> SPA (Single Page Application)= back end > JSON > Web(React)/Mobile(RNative) > Browser/iOS/Android 
+
+
+ > Bundlers & Compilers
+
+  -> Bundler = Babel - Obsolete(X)
+  -> Compiler = Vite - Trending(Ok)
+
+
+ > Criando um projeto
+
+  -> Node version control chamado apenas de "n" = npm install -g n ou n install lts
+  -> npm -v
+  -> node -v
+  -> npm create vite@latest
+  -> selecionar react ou react-ts (react + typescript). É possível iniciar com react apenas e depois mudar ou adicionar ou converter para o ts.
+  
+  -> npm run dev to run the app on the browser
+  
+  -> React = Core do react que é base para web, mobile, tv etc...
+  -> React DOM = Web
+  -> React Native = Mobile
+
+
+ > Components:
+
+  -> funcinam como tags do HTML
+  -> Uma função que retorna HTML
+  -> Pode ser quebrado em partes menores e ser reusado/repetido várias vezes
+  -> JSX = JS + XML
+  -> Usar <div></div> ou apenas <></> vazias, de preferência, para empacotar os elementos dos componentes se mais que um elemento
+  -> Usar de preferência Named Export como no segundo exemplo abaixo ... em Post.jsx...
+
+ex.:
+ 
+function App() {
+  return (
+   ...
+  )
+}
+
+ou
+
+... em Post.jsx...
+
+export function Post(props) {
+    return (
+        <div>
+            <strong>{props.author}</strong>
+            <p>{props.content}</p>
+            <p>{props.separator}</p>
+        </div>
+    )
+}
+
+... que exporta para App.jsx...
+
+import {Post} from './Post';
+
+export function App() {
+  return (
+    <div>
+     <Post
+      author="Alexandre Paes"
+      content="Any simple text"
+      separator="-----------------------------------------"
+     />
+     <Post
+      author="Alex Monteiro"
+      content="Any simple text once again"
+      separator="-----------------------------------------"
+     />
+    </div>
+  )
+}
+
+... e que main.jsx importa { App } from './App'...
+
+
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import {App} from './App'
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+)
+
+
+ > Propriedades:
+
+  -> São informações que passamos para componentes
+  -> Geralmente são em formato de objetos "{key: value}"
+  -> Ótimo reaproveitamento de html, css, etc...
+  -> Diferencia atributos/propriedades na reutilização de código
+  -> Utiliza dot notation dentro de {} ex.: 
+
+  export function Post(props) {
+    return (
+        <div>
+            <strong>{props.author}</strong>
+            <p>{props.content}</p>
+            <p>{props.separator}</p>
+        </div>
+    )
+}
+
+---------------------------------------------------
+
+ > Estrutura da Aplicação
+ 
+  -> Practical ReactJS Project's big picture to know a little bit of different parts of it from Figma Design, CSS to Components like Header, Sidebar, Post, Avatar and even a Form for the post's comments and responsiviness
+
+---------------------------------------------------
+
+- Os Motores do React
+
+ > Estado (useState):
+
+  -> Post.jsx
+  -> utiliza reações às ações dos usuários como os botões de submit post (publicar) por exemplo
+  -> usa funções como abaixo:
+   
+   const comments = [
+     
+     1,
+     2,
+   ];
+   
+   export function Post(etc...
+        const publishedDateFormatted = etc...
+        
+        const etc...
+        
+ 	function handleCreateNewComment() {
+ 	
+ 	  event.preventDefault()
+ 	  
+ 	  comments.push(3)
+ 	  
+ 	  console.logs(comments);
+ 	}
+ 	
+  -> Somente com formato acima, não é possível que o React observa as mudanças de estados das variáveis ou componentes, logo, reações não serão refletidas na interface do usuário, por isso a necessidade do conceito de useState, para garantir que o React seja mais performático, não sendo obrigado a ouvir a tudo mas somente aos que usarem esse conceito de estado ou useState para monitorá-los.
+  -> Para que o monitoramento orgânico de mudanças de estados, useState, funcione como esperado na situação acima por exemplo, devemos fazer como mostra no código abaixo:   
+   
+   export function Post(etc...
+   
+   	const [comments, setComments] = useState([     
+          1,
+          2,
+        ]);
+   	
+        const publishedDateFormatted = etc...
+        
+        const etc...
+        
+ 	function handleCreateNewComment() {
+ 	
+ 	  event.preventDefault()
+ 	  
+ 	  setComments([1,2,3]);
+ 	}
+
+  -> O final do modelo acima teria problemas para adicionar um novo comment de forma automática ao final ou logo depois do último publicado e, para sanar isso, refatore a linha 161 (setComments([1,2,3]); por (setComments([...comments, comments.length + 1]);
+  -> Ainda não seria o suficiente e o código final teria essas mudanças:
+  
+    - Post.jsx
+ 
+ 	export function Post({author, publishedAt, content}) {
+
+	const [comments, setComments] = useState([
+		'Post muito bacana, hein?!'
+	])
+	
+	const publishedDateFormatted...
+	
+	const publishedDateRelativeToNow...
+	
+	function handleCreateNewComment() {
+	  event.preventDefault()
+
+	  const newCommentText = event.target.comment.value
+
+	  setComments([...comments, newCommentText]);
+
+	  event.target.comment.value = '';
+	}
+ 	
+ 	return (...
+ 	
+ 	  <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
+		<strong>Leave your feedback:</strong>
+		<textarea name="comment" placeholder='Leave your feedback' />
+		<button type='submit'>Send</button>
+	  </form>
+
+	  <div className={styles.commentList}>
+		{/* <Comment />
+		<Comment />
+		<Comment /> */}
+
+		{comments.map(comment => {
+			return <Comment content={comment} />
+		})} 	
+ 
+ 
+ > Inserindo Comentários (Programação Declarativa)
+  
+  -> Conceitos de programação Imperativa vs Declarativa
+  -> Imperativa: O que deve ser feito (Algoritmo/passo a passo)
+  -> ex imperativa: Ligar o forno, abrir a porta do forno, colocar a assadeira, fechar a porta do forno, etc
+  -> Declarativa: Quais as condições para ter o resultado final
+  -> ex declarativa: o forno precisa estar aquecido, a porta precisa estar aberta para colocar a massa, a porta do forno precisa ser fechada para a massa ficar pronta no tempo estimado, a massa precisa estar pronta para desligar o forno, etc...
+
+
+ > Entendendo a Key
+ 
+  -> Uma key representa uma propriedade que recebe um valor tanto quanto em objetos e ou em listas utilizando o map
+  -> Uma key é sempre o primeiro parâmetro em um elemento html, por exemplo <p key={line.content}><a href="#">
+  -> No exemplo acima está sendo usado o conteúdo dos parágrafos como parâmetro de diferenciação, mas em apps reais geralmente e deveria se usar id principalmente para não ter lentidão ao ter todos os componentes re-renderizados nem ter que usar o index pelo fato de que se eu alterar as posições dos conteúdos, os indices continuarão os mesmos e isso bagunçaria tudo.
+
+
+ > Comunicação Entre Componentes
+ 
+  -> Em src > components > Comment.jsx > export function, adicionar a função function handleDeleteComment() {console.log='Deletar'}, dai mais abaixo, em return {...}, <button/>, mudar para, <button onClick={handleDeleteComment} title="Deletar Comentário"> <Trash size={24}/> </button>
+  -> Em src > components > Post.jsx > export function, adicionar a função function deleteComment(comment) {console.log=`Deletar Comentario ${comment}`}, dai mais abaixo, em return {...}, na div logo abaixo de <footer/>, adicionar a função deleteComment como propriedade na linha do return assim: return {<Comment key={comment} content={comment} onDeleteComment={deleteComment}/>}
+  -> dai volta em Comment.jsx e em export function Comment({ content, onDeleteComment}), adicionar vírgula e o parâmetro onDeleteComment e em function handleDeleteComment(), adicionar onDeleteComment(content) dentro do {}
+  
+  
+ > Removendo Comentários (imutabilidade)
+ 
+  -> Vai basicamente modificar apenas a função em return{... function deleteComment(commentToDelete) {const commentsWithoutDeletedOne = comments.filter{comment => {return comment != commentToDelete;}} setComments(commentsWithoutDeletedOne); }
+  
+
+----------------------------------------------------------------------------------------------
+
+- Aprimorando a Aplicação
+
+ > Fundamentos do Typescript:
+
+  -> 
+  
+  
+
+----------------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------------
+######################################################
+
+ Projeto 02:
+ 
+- 
+  
+ > 
+  
+ ->
+   
+
+
+
+----------------------------------------------------------------------------------------------
+
+##############################################################################################
+
+
+ Rocketseat - Ignite - NodeJS
+----------------------------------------------------------------------------------------------
+
+ Iniciando com NodeJS
+ 
+  > Introdução
+  
+   ->
+   
+  > Criando um projeto Node.js
+  
+   -> 
+
+----------------------------------------------------------------------------------------------
+
+ Estrutura da Aplicação
+ 
+  > 
+  
+  -> 
+
+
+----------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------
+
+##############################################################################################
+
+ 
+ Rocketseat - Ignite - React Native
+----------------------------------------------------------------------------------------------
+
+ - Iniciando com React Native
+ 
+  > Introdução
+  
+   -> Como as 4 primeiras aulas, essa e mais 3, foram de pouco mais de 2 minutinhos apenas e, não teve assuntos tão relevantes abordados, somente sobre o projeto que construiremos nesse módulo, que é o I'm Here, um app geralmente usado em eventos e tal, o que é e quem usa o React Native, vou deixar essa descrição toda aqui só para constar, daí da próxima aula em diante, como a da aula o que é Expo, de 17 minutos, as aulas já começam a ficarem mais longas precisando de anotações individuais.
+   
+  > O que é Expo
+  
+   -> Existem 2 formas de criar ambientes de desenvolvimento com o React Native que são, o React Native CLI, que é mais manual, portanto, mais trabalhoso, dai então nós temos a forma mais prática que é com o Expo, que é mais automático e com mais beneficíos, como por exemplo, poder usar um dipositivo físico com iOS e com o Expo Go instalado para testar a aplicação durante o desenvolvimento diretamente nesse dispositivo.
+   -> Só é possível utilizar o Expo para iOS com o macOS/OSX ou com o dispositivo com iOS
+   -> Para utilizar o Expo em OS Windows e Linux, só é possível desenvolver e testar para Android
+   -> O Expo disponibiliza 2 configuraçãos de uso distintas, sendo a Managed Workflow, que faz todo o trabalho pesado de configuração de ambiente de desenvolvimento e tira do seu alcance o acesso ás pastas nativas do iOS e do Android, enquanto a segunda forma, Bare Workflow, te permite o acesso e controle toral dessas pastas e maior liberdade de configuração e customização.
+   
+------------------------------------------------------------------------------------------------------------------
+
+ - Fundamentos
+  
+  > Preparando seu Ambiente de Desenvolvimento
+  
+   -> https://react-native.rocketseat.dev/
+   -> https://react-native.rocketseat.dev/expo-managed/linux é o mesmo que o do link acima mas para Linux
+   -> Sugeriu configura já tanto o ambiente com Managed tanto com o Bare Workflow
+   
+  > Expo com NPX
+  
+   -> 
+
+
+----------------------------------------------------------------------------------------------
+
+ - Finalizando o APP
+ 
+  > 
+  
+   -> 
+
+----------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------
+
+
+##############################################################################################
+
+
+
+ # react.dev/learn
+ 
+ Get Started
+ 
+ - Quick Start
+  
+  # This page will give you an introduction to the 80% of React concepts that you will use on a daily basis.
+  
+  > Overview:
+   
+    You will learn:
+    
+   -> How to create and nest components
+   -> How to add markup and styles
+   -> How to display data
+   -> How to render conditions and lists
+   -> How to respond to events and update the screen
+   -> How to share data between components
+   
+  > Creating and nesting components
+  
+   -> React apps are built with reusable components.
+   -> Components are JavaScript functions that return UI elements.
+   -> Components can be nested within other components to create complex UIs.
+   -> Component names must start with a capital letter to distinguish them from HTML tags.
+
+   -> Example:
+
+      MyButton component: Defines a button using a JavaScript function.
+      MyApp component: Nests the MyButton component within a div and h1 to create a simple app structure.
+  
+   -> Key takeaways:
+
+      Modular design: Components promote code organization and reusability.
+      Logic and appearance: Components encapsulate both UI and behavior.
+      Flexibility: Nesting allows for building complex UIs from smaller, self-contained parts.
+      Naming conventions: Capitalized names for components, lowercase for HTML tags. 
+
+   -> It's the final result:
+  
+     function MyButton() {
+	return (
+	  <button>
+	    I'm a button
+	  </button>
+       );
+     }
+
+     export default function MyApp() {
+	return (
+	  <div>
+	    <h1>Welcome to my app</h1>
+	    <MyButton />
+	  </div>
+	);
+     }
+     
+
+ > Writing markup with JSX
+ 
+  -> JSX is a syntax extension for JavaScript that allows writing HTML-like structures within React components.
+  -> It's optional but widely used for its convenience and readability.
+  -> JSX has stricter rules than HTML:
+  -> Tags must be closed (e.g., <br />).
+  -> Components must return a single root element, achieved by wrapping multiple elements in a parent like div or the empty <>...</> tag.
+  
+  -> Example:
+  
+     jsx function AboutPage() { return ( <> <h1>About</h1> <p>Hello there.<br />How do you do?</p> </> ); }
+  
+  Key takeaways:
+  
+  -> JSX enhances code readability and maintainability.
+  -> It's supported by most React development tools.
+  -> It has specific rules to ensure well-formed structures.
+  
+	  function AboutPage() {
+	  return (
+	    <>
+	      <h1>About</h1>
+	      <p>Hello there.<br />How do you do?</p>
+	    </>
+	  );
+	}
+ 
+ 
+ > Adding styles
+ 
+  -> In React, you specify a CSS class with className. It works the same way as the HTML class attribute:
+  
+     <img className="avatar" /> 
+
+  -> Then you write the CSS rules for it in a separate CSS file:
+  
+      /* In your CSS */
+      .avatar {
+        border-radius: 50%;
+      }
+      
+  -> React does not prescribe how you add CSS files. In the simplest case, you’ll add a <link> tag to your HTML. If you use a build tool or a framework, consult its documentation to learn how to add a CSS file to your project.
+
+
+ > Displaying Data
+ 
+  -> JSX lets you put markup into JavaScript. Curly braces let you “escape back” into JavaScript so that you can embed some variable from your code and display it to the user. For example, this will display user.name:
+  
+  -> exemplo: 
+  
+    return (
+      <h1>
+       {user.name}
+      </h1>
+    );
+    
+    
+  -> You can also “escape into JavaScript” from JSX attributes, but you have to use curly braces instead of quotes. For example, className="avatar" passes the "avatar" string as the CSS class, but src={user.imageUrl} reads the JavaScript user.imageUrl variable value, and then passes that value as the src attribute:
+  
+  -> exemplo:
+  
+     return (
+       <img
+         className="avatar"
+         src={user.imageUrl}
+       />
+     );
+     
+     
+  -> You can put more complex expressions inside the JSX curly braces too, for example, string concatenation:
+  
+  -> exemplo:
+  
+    const user = {
+	name: 'Hedy Lamarr',
+	imageUrl: 'https://i.imgur.com/yXOvdOSs.jpg',
+	imageSize: 90,
+     };
+
+    export default function Profile() {
+	return (
+	  <>
+	    <h1>{user.name}</h1>
+	    <img
+	      className="avatar"
+	      src={user.imageUrl}
+	      alt={'Photo of ' + user.name}
+	      style={{
+		width: user.imageSize,
+		height: user.imageSize
+	      }}
+	   />
+	 </>
+       );
+     }
+
+  -> In the above example, style={{}} is not a special syntax, but a regular {} object inside the style={ } JSX curly braces. You can use the style attribute when your styles depend on JavaScript variables.
+  
+  
+ > Conditional rendering 
+
+  -> In React, there is no special syntax for writing conditions. Instead, you’ll use the same techniques as you use when writing regular JavaScript code. For example, you can use an if statement to conditionally include JSX
+  -> Exemplo:
+  
+     let content;
+     if (isLoggedIn) {
+       content = <AdminPanel />;
+     } else {
+       content = <LoginForm />;
+     }
+     
+     return (
+       <div>
+         {content}
+       </div>
+     );
+     
+  -> If you prefer more compact code, you can use the conditional ? operator. Unlike if, it works inside JSX
+  -> Example:
+  
+     <div>
+       {isLoggedIn ? (
+         <AdminPanel />
+       ) : (
+         <LoginForm />
+       )}
+     </div>
+  
+  -> When you don’t need the else branch, you can also use a shorter logical && syntax
+  -> Example:
+  
+     <div>
+       {isLoggedIn && <AdminPanel />}
+     </div>
+  
+  -> All of these approaches also work for conditionally specifying attributes. If you’re unfamiliar with some of this JavaScript syntax, you can start by always using if...else
+  
+  
+ > Rendering Lists
+ 
+  -> You will rely on JavaScript features like for loop and the array map() function to render lists of components.
+  -> For example, let’s say you have an array of products:
+   
+     const products = [
+  	{ title: 'Cabbage', id: 1 },
+  	{ title: 'Garlic', id: 2 },
+  	{ title: 'Apple', id: 3 },
+     ];
+     
+  -> Inside your component, use the map() function to transform an array of products into an array of <li> items
+  -> Example:
+  
+     const listItems = products.map(product =>
+  	<li key={product.id}>
+    	  {product.title}
+  	</li>
+     );
+
+     return (
+       <ul>{listItems}</ul>
+     );
+     
+  -> Notice how <li> has a key attribute. For each item in a list, you should pass a string or a number that uniquely identifies that item among its siblings. Usually, a key should be coming from your data, such as a database ID. React uses your keys to know what happened if you later insert, delete, or reorder the items   
+  -> This is the final and complete result as example:
+  
+    const products = [
+  	{ title: 'Cabbage', isFruit: false, id: 1 },
+  	{ title: 'Garlic', isFruit: false, id: 2 },
+  	{ title: 'Apple', isFruit: true, id: 3 },
+     ];
+
+     export default function ShoppingList() {
+       const listItems = products.map(product =>
+         <li
+           key={product.id}
+           style={{
+              color: product.isFruit ? 'magenta' : 'darkgreen'
+           }}
+         >
+           {product.title}
+         </li>
+     );
+
+     return (
+       <ul>{listItems}</ul>
+     );
+   }
+   
+   -> The style above is to show the fruits in magenta/purple, otherwise in dark green
+   
+   
+ > Responding to Events
+ 
+  -> You can respond to events by declaring event handler functions inside your components
+  -> Example:
+  
+     function MyButton() {
+       function handleClick() {
+         alert('You clicked me!');
+       }
+
+       return (
+         <button onClick={handleClick}>
+           Click me
+         </button>
+       );
+     }
+     
+  -> Notice how onClick={handleClick} has no parentheses at the end! Do not call the event handler function: you only need to pass it down. React will call your event handler when the user clicks the button
+  
+
+ > Updating the screen 
+ 
+  -> Often, you’ll want your component to “remember” some information and display it. For example, maybe you want to count the number of times a button is clicked. To do this, add state to your component
+  -> First, import useState from React: import { useState } from 'react';
+  -> Now you can declare a state variable inside your component:
+     
+     function MyButton() {
+  	const [count, setCount] = useState(0);
+        // ... 
+  
+  -> You’ll get two things from useState: the current state (count), and the function that lets you update it (setCount). You can give them any names, but the convention is to write [something, setSomething].
+
+  -> The first time the button is displayed, count will be 0 because you passed 0 to useState(). When you want to change state, call setCount() and pass the new value to it. Clicking this button will increment the counter:
+  
+     function MyButton() {
+       const [count, setCount] = useState(0);
+
+       function handleClick() {
+         setCount(count + 1);
+       }
+
+       return (
+         <button onClick={handleClick}>
+           Clicked {count} times
+         </button>
+       );
+     }
+
+  -> React will call your component function again. This time, count will be 1. Then it will be 2. And so on
+  -> If you render the same component multiple times, each will get its own state. Click each button separately
+  -> Example:
+  
+     	import { useState } from 'react';
+
+	export default function MyApp() {
+	  return (
+	    <div>
+	      <h1>Counters that update separately</h1>
+	      <MyButton />
+	      <MyButton />
+	    </div>
+	  );
+	}
+
+	function MyButton() {
+	  const [count, setCount] = useState(0);
+
+	  function handleClick() {
+	    setCount(count + 1);
+	  }
+
+	  return (
+	    <button onClick={handleClick}>
+	      Clicked {count} times
+	    </button>
+	  );
+	}
+	
+  -> Notice how each button “remembers” its own count state and doesn’t affect other buttons
+  
+  
+ > Using Hooks
+ 
+  -> Functions starting with "use" are called Hooks. useState is a built-in Hook provided by React. You can find other built-in Hooks in the API reference. You can also write your own Hooks by combining the existing ones
+  -> Hooks are more restrictive than other functions. You can only call Hooks at the top of your components (or other Hooks). If you want to use useState in a condition or a loop, extract a new component and put it there
+  
+  
+ > Sharing data between components
+ 
+  -> In the previous example, each MyButton had its own independent count, and when each button was clicked, only the count for the button clicked changed
+  -> However, often you’ll need components to share data and always update together
+  -> To make both MyButton components display the same count and update together, you need to move the state from the individual buttons “upwards” to the closest component containing all of them
+  -> Now when you click either button, the count in MyApp will change, which will change both of the counts in MyButton. Here’s how you can express this in code
+  -> First, move the state up from MyButton into MyApp:
+  
+     export default function MyApp() {
+	  const [count, setCount] = useState(0);
+
+	  function handleClick() {
+	    setCount(count + 1);
+	  }
+
+	  return (
+	    <div>
+	      <h1>Counters that update separately</h1>
+	      <MyButton />
+	      <MyButton />
+	    </div>
+	  );
+	}
+
+	function MyButton() {
+	  // ... we're moving code from here ...
+	}
+	
+  -> Then, pass the state down from MyApp to each MyButton, together with the shared click handler. You can pass information to MyButton using the JSX curly braces, just like you previously did with built-in tags like <img>:
+  
+     export default function MyApp() {
+	  const [count, setCount] = useState(0);
+
+	  function handleClick() {
+	    setCount(count + 1);
+	  }
+
+	  return (
+	    <div>
+	      <h1>Counters that update together</h1>
+	      <MyButton count={count} onClick={handleClick} />
+	      <MyButton count={count} onClick={handleClick} />
+	    </div>
+	  );
+	}
+	
+  -> The information you pass down like this is called props. Now the MyApp component contains the count state and the handleClick event handler, and passes both of them down as props to each of the buttons
+  -> Finally, change MyButton to read the props you have passed from its parent component:
+  
+     function MyButton({ count, onClick }) {
+	  return (
+	    <button onClick={onClick}>
+	      Clicked {count} times
+	    </button>
+	  );
+	}
+
+  -> When you click the button, the onClick handler fires. Each button’s onClick prop was set to the handleClick function inside MyApp, so the code inside of it runs. That code calls setCount(count + 1), incrementing the count state variable. The new count value is passed as a prop to each button, so they all show the new value. This is called “lifting state up”. By moving state up, you’ve shared it between components
+  -> Here's the final result:
+  
+     import { useState } from 'react';
+
+	export default function MyApp() {
+	  const [count, setCount] = useState(0);
+
+	  function handleClick() {
+	    setCount(count + 1);
+	  }
+
+	  return (
+	    <div>
+	      <h1>Counters that update together</h1>
+	      <MyButton count={count} onClick={handleClick} />
+	      <MyButton count={count} onClick={handleClick} />
+	    </div>
+	  );
+	}
+
+	function MyButton({ count, onClick }) {
+	  return (
+	    <button onClick={onClick}>
+	      Clicked {count} times
+	    </button>
+	  );
+	}
+	
+	
+ > Next Steps
+ 
+  -> By now, you know the basics of how to write React code
+  -> Check out the Tutorial Tic-Tac-Toe to put them into practice and build your first mini-app with React
+  
+  
+---------------------------------------------------------------------------------------------------------
+
+ Tutorial: Tic-Tac-Toe
+ 
+ You will build a small tic-tac-toe game during this tutorial. This tutorial does not assume any existing React knowledge. The techniques you’ll learn in the tutorial are fundamental to building any React app, and fully understanding it will give you a deep understanding of React.
+ 
+ Note
+This tutorial is designed for people who prefer to learn by doing and want to quickly try making something tangible. If you prefer learning each concept step by step, start with Describing the UI.
+
+ The tutorial is divided into several sections:
+
+ 1. "Setup for the tutorial" will give you a starting point to follow the tutorial.
+ 2. "Overview" will teach you the fundamentals of React: components, props, and state.
+ 3. "Completing the game" will teach you the most common techniques in React development.
+ 4. "Adding time travel" will give you a deeper insight into the unique strengths of React.
+ 
+ 
+ On This Page
+ 
+ > What are you building?
+ 
+  -> In this tutorial, you’ll build an interactive tic-tac-toe game with React.
+
+  -> You can see what it will look like when you’re finished here:
+  
+     import { useState } from 'react';
+
+	function Square({ value, onSquareClick }) {
+	  return (
+	    <button className="square" onClick={onSquareClick}>
+	      {value}
+	    </button>
+	  );
+	}
+
+	function Board({ xIsNext, squares, onPlay }) {
+	  function handleClick(i) {
+	    if (calculateWinner(squares) || squares[i]) {
+	      return;
+	    }
+	    const nextSquares = squares.slice();
+	    if (xIsNext) {
+	      nextSquares[i] = 'X';
+	    } else {
+	      nextSquares[i] = 'O';
+	    }
+	    onPlay(nextSquares);
+	  }
+
+	  const winner = calculateWinner(squares);
+	  let status;
+	  if (winner) {
+	    status = 'Winner: ' + winner;
+	  } else {
+	    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+	  }
+
+	  return (
+	    <>
+	      <div className="status">{status}</div>
+	      <div className="board-row">
+		<Square value={squares[0]} onSquareClick={() => handleClick(0)} />
+		<Square value={squares[1]} onSquareClick={() => handleClick(1)} />
+		<Square value={squares[2]} onSquareClick={() => handleClick(2)} />
+	      </div>
+	      <div className="board-row">
+		<Square value={squares[3]} onSquareClick={() => handleClick(3)} />
+		<Square value={squares[4]} onSquareClick={() => handleClick(4)} />
+		<Square value={squares[5]} onSquareClick={() => handleClick(5)} />
+	      </div>
+	      <div className="board-row">
+		<Square value={squares[6]} onSquareClick={() => handleClick(6)} />
+		<Square value={squares[7]} onSquareClick={() => handleClick(7)} />
+		<Square value={squares[8]} onSquareClick={() => handleClick(8)} />
+	      </div>
+	    </>
+	  );
+	}
+
+	export default function Game() {
+	  const [history, setHistory] = useState([Array(9).fill(null)]);
+	  const [currentMove, setCurrentMove] = useState(0);
+	  const xIsNext = currentMove % 2 === 0;
+	  const currentSquares = history[currentMove];
+
+	  function handlePlay(nextSquares) {
+	    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+	    setHistory(nextHistory);
+	    setCurrentMove(nextHistory.length - 1);
+	  }
+
+	  function jumpTo(nextMove) {
+	    setCurrentMove(nextMove);
+	  }
+
+	  const moves = history.map((squares, move) => {
+	    let description;
+	    if (move > 0) {
+	      description = 'Go to move #' + move;
+	    } else {
+	      description = 'Go to game start';
+	    }
+	    return (
+	      <li key={move}>
+		<button onClick={() => jumpTo(move)}>{description}</button>
+	      </li>
+	    );
+	  });
+
+	  return (
+	    <div className="game">
+	      <div className="game-board">
+		<Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+	      </div>
+	      <div className="game-info">
+		<ol>{moves}</ol>
+	      </div>
+	    </div>
+	  );
+	}
+
+	function calculateWinner(squares) {
+	  const lines = [
+	    [0, 1, 2],
+	    [3, 4, 5],
+	    [6, 7, 8],
+	    [0, 3, 6],
+	    [1, 4, 7],
+	    [2, 5, 8],
+	    [0, 4, 8],
+	    [2, 4, 6],
+	  ];
+	  for (let i = 0; i < lines.length; i++) {
+	    const [a, b, c] = lines[i];
+	    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+	      return squares[a];
+	    }
+	  }
+	  return null;
+	}
+
+  -> If the code doesn’t make sense to you yet, or if you are unfamiliar with the code’s syntax, don’t worry! The goal of this tutorial is to help you understand React and its syntax
+  -> 
+  
+ 
+ Overview
+ 
+ > Inspecting the starter code
+ 
+  -> In CodeSandbox you’ll see three main sections:
+  
+     1. The Files section with a list of files like App.js, index.js, styles.css and a folder called public
+     2. The code editor where you’ll see the source code of your selected file
+     3. The browser section where you’ll see how the code you’ve written will be displayed
+     
+  -> 
+ 
+ Completing the Game
+ 
+ > Lifting the state up
+ 
+  -> Currently, each Square component maintains a part of the game’s state. To check for a winner in a tic-tac-toe game, the Board would need to somehow know the state of each of the 9 Square components
+  -> 
+  
+ Adding the Time Travel
+ 
+ > Storing a history of moves
+ 
+  -> If you mutated the squares array, implementing time travel would be very difficult
+  ->  
+ 
+
+
+
+  
+  
+  
+  
+  
+
+
+
+----------------------------------------------------------------------------------------------
+##############################################################################################
+
+ - NLW
+
+Esquenta RS/XP 2023 - Descomplicando testes técnicos (do iniciante ao avançado):
+
+ - Perguntar sobre o problema proposto é normal, muitas vezes, essencial para além de se certificar que realmente entendeu o problema, mostra interesse em entender e resolver o problema
+ - Não mentir e quando travar, dizer que não consegue ir mais e se for o caso, perguntar se terá uma chance de ver ou rever sobre o ponto em que travou para mostrar disposição em evoluir
+ - Fazer funcionar e se sobrar tempo refatorar
+ - Anotar os passos, tópicos ou tarefas para a execução da solução do desafio                
+
+----------------------------------------------------------------------------------------------
+
+ Javascript Algorithm and Data Structure Masterclass - Udemy
+
+ - Problem Solving:
+  -> 1. Understnad the problem
+  -> 2. Explore concrete examples
+  -> 3. Break it down
+  -> 4. Solve/Simplify
+  -> 5. Look back and refactor
+
+ 1. Understnad the problem:
+
+  - Can I restate the problem in my own words?
+  - What are the inputs that go into the problem?
+  - What are the outputs that should come from the solution to the problem?
+  - Can the outputs be determined from the inputs? In other words, do I have enough information to solve the problem? (You may not be able to answer this question until you set about solving the problem. That's okay; it's still worth considering the question at this early stage.)
+  - How or what should I label the important pieces of data that are a part of the problem?
+
+  Ex.: Write a function which takes two numbers and returns their sum.
+
+  function soma(a, b) {
+    const result = a + b;
+    return result;
+  }
+  
+  console.log(soma(2, 2));
+
+
+ 2. Explore concrete examples:
+
+  - Start with Simple Examples
+  - Progress to More Complex Examples
+  - Explore Examples with Empty Inputs
+  - Explore Examples with Invalid Inputs
+  
+  Ex.: Write a function which takes in a string and returns counts of each character in the string.
+
+  function stringInput() {
+    const name = prompt("Type ur name: ");
+    return name;
+  }
+
+  console.log(stringInput()); // The name will be asked to be entered on the pop up window
+
+
+ 3. Break it down:
+
+  - Explicitly write out the steps you need to take.
+    (This forces you to think about the code you'll write before you write it, and helps you catch any lingering conceptual issues or misunderstandings before you dive in and have to worry about details e.g. language syntax, as well.)
+
+  Ex.: Write a function which takes in a string and returns counts of each character in the string.
+
+  function 
+
+
+ 4. Solve/Simplify:
+
+  - Solve the problem if possible, but if not, solve a simpler problem.
+  - Find the core difficulty in what you're trying to do
+  - Temporarily ignore that difficulty
+  - Write a simplified solution
+  - Then incorporate that difficulty back in
+
+  Ex.: Write a function which takes in a string and returns counts of each character in the string.
+
+  function 
+
+
+ 5. Look back and refactor:
+
+  - Congrats on solving it, but you're not done!
+  - REFACTORING QUESTIONS:
+    - Can you check the result?
+    - Can you derive the result differently?
+    - Can you understand it at a glance?
+    - Can you use the result or method for some other problem?
+    - Can you improve the performance of your solution?
+    - Can you think of other ways to refactor?
+    - How have other people solved this problem?	
+
+  Ex.: Write a function which takes in a string and returns counts of each character in the string.
+
+  function
+
+ 
+  RECAP!
+
+  - Understand the Problem
+  - Explore Concrete Examples
+  - Break It Down
+  - Solve/Simplify
+  - Look Back and Refactor
+
+
+  HOW DO YOU IMPROVE?
+
+  - Devise a plan for solving problems = Done!
+  - Master common problem solving patterns = Next up!
+
+
+  Problem solving patterns:
+
+  - Some patterns:
+   - Frequency Counter
+   - Multiple Pointers
+   - Sliding Window
+   - Divide and Conquer
+   - Dynamic Programming
+   - Greedy Algorithms
+   - Backtracking
+   - Many more!
+
+  
+  FREQUENCY COUNTERS
+
+  - This pattern uses objects or sets to collect values/frequencies of values
+  - This can often avoid the need for nested loops or O(N^2) operations with arrays / strings
+
+
+  AN EXAMPLE
+
+  - Write a function called same, which accepts two arrays. The function should return true if every value in the array has it's corresponding value squared in the second array. The frequency of values must be the same.
+
+  same([1,2,3], [4,1,9]) // true
+  same([1,2,3], [1,9]) // false
+  same([1,2,1], [4,4,1]) // false (must be same frequency)
+
+
+  A NAIVE SOLUTION : Time Complexity - N^2
+
+  function same(arr1, arr2){
+    if(arr1.length !== arr2.length){
+        return false;
+    }
+    for(let i = 0; i < arr1.length; i++){
+        let correctIndex = arr2.indexOf(arr1[i] ** 2)
+        if(correctIndex === -1) {
+            return false;
+        }
+        arr2.splice(correctIndex,1)
+    }
+    return true
+  }
+
+  
+  REFACTORED: Time Complexity - O(n)
+    
+  function same(arr1, arr2){
+    if(arr1.length !== arr2.length){
+        return false;
+    }
+    let frequencyCounter1 = {}
+    let frequencyCounter2 = {}
+    for(let val of arr1){
+        frequencyCounter1[val] = (frequencyCounter1[val] || 0) + 1
+    }
+    for(let val of arr2){
+        frequencyCounter2[val] = (frequencyCounter2[val] || 0) + 1        
+    }
+    for(let key in frequencyCounter1){
+        if(!(key ** 2 in frequencyCounter2)){
+            return false
+        }
+        if(frequencyCounter2[key ** 2] !== frequencyCounter1[key]){
+            return false
+        }
+    }
+    return true
+  }
+
+  
+  ANAGRAMS
+
+  - Given two strings, write a function to determine if the second string is an anagram of the first. An anagram is a word, phrase, or name formed by rearranging the letters of another, such as cinema, formed from iceman.
+
+  validAnagram('', '') // true
+  validAnagram('aaz', 'zza') // false
+  validAnagram('anagram', 'nagaram') // true
+  validAnagram("rat","car") // false) // false
+  validAnagram('awesome', 'awesom') // false
+  validAnagram('qwerty', 'qeywrt') // true
+  validAnagram('texttwisttime', 'timetwisttext') // true
+
+
+  My Turn to try to solve it...
+
+  
+  MULTIPLE POINTERS
+
+  - Creating pointers or values that correspond to an index or position and move towards the beginning, end or middle based on a certain condition
+  - Very efficient for solving problems with minimal space complexity as well
+
+  AN EXAMPLE
+
+  - Write a function called sumZero which accepts a sorted array of integers. The function should find the first pair where the sum is 0. Return an array that includes both values that sum to zero or undefined if a pair does not exist
+
+  sumZero([-3,-2,-1,0,1,2,3]) // [-3,3] 
+  sumZero([-2,0,1,3]) // undefined
+  sumZero([1,2,3]) // undefined
+  
+  NAIVE SOLUTION: Time Complexity - O(N^2); Space Complexity - O(1);
+
+  function sumZero(arr){
+    for(let i = 0; i < arr.length; i++){
+        for(let j = i+1; j < arr.length; j++){
+            if(arr[i] + arr[j] === 0){
+                return [arr[i], arr[j]];
+            }
+        }
+    }
+  }
+
+
+  REFACTOR: Time Complexity - O(N); Space Complexity - O(1);
+
+  function sumZero(arr){
+    let left = 0;
+    let right = arr.length - 1;
+    while(left < right){
+        let sum = arr[left] + arr[right];
+        if(sum === 0){
+            return [arr[left], arr[right]];
+        } else if(sum > 0){
+            right--;
+        } else {
+            left++;
+        }
+    }
+  }
+
+
+  PATTERN #1 - MULTIPLE POINTERS
+
+  Solution 1: Time Complexity - O(N^2); Space Complexity - O(1); = Bad option
+
+  function sumZero(arr){
+    for(let i = 0; i < arr.length; i++){
+      for(let j = i+1; j < arr.length; j++){
+         if(arr[i] + arr[j] === 0){
+            return [arr[i], arr[j]];
+         }
+      }
+    }
+  }
+  
+
+  Solution 2: Time Complexity - O(N); Space Complexity - O(1); = Good option
+
+  function sumZero(arr){
+    let left = 0;
+    let right = arr.length - 1;
+    while(left < right){
+      let sum = arr[left] + arr[right];
+      if(sum === 0){
+          return [arr[left], arr[right]];
+      } else if(sum > 0){
+        right--;
+      } else {
+        left++;
+      }
+    }
+  }
+
+
+  countUniqueValues
+
+  - Implement a function called countUniqueValues, which accepts a sorted array, and counts the unique values in the array. There can be negative numbers in the array, but it will always be sorted.
+
+  countUniqueValues([1,1,1,1,1,2]) // 2
+  countUniqueValues([1,2,3,4,4,4,7,7,12,12,13]) // 7
+  countUniqueValues([]) // 0
+  countUniqueValues([-2,-1,-1,0,1]) // 4
+
+  My turn again...
+
+  SLIDING WINDOW
+
+  - This pattern involves creating a window which can either be an array or number from one position to another
+  - Depending on a certain condition, the window either increases or closes (and a new window is created)
+  - Very useful for keeping track of a subset of data in an array/string etc.
+
+  An Example
+
+  - Write a function called maxSubarraySum which accepts an array of integers and a number called n. The function should calculate the maximum sum of n consecutive elements in the array.
+
+  maxSubarraySum([1,2,5,2,8,1,5],2) // 10
+  maxSubarraySum([1,2,5,2,8,1,5],4) // 17
+  maxSubarraySum([4,2,1,6],1) // 6
+  maxSubarraySum([4,2,1,6,2],4) // 13
+  maxSubarraySum([],4) // null
+
+  A naive solution: Time Complexity - O(N^2)
+
+  function maxSubarraySum(arr, num) {
+    if ( num > arr.length){
+      return null;
+    }
+    var max = -Infinity;
+    for (let i = 0; i < arr.length - num + 1; i ++){
+      temp = 0;
+      for (let j = 0; j < num; j++){
+        temp += arr[i + j];
+      }
+      if (temp > max) {
+        max = temp;
+      }
+    }
+    return max;
+  }
+  
+  
+  Refactor: Time Complexity - O(N)
+
+  function maxSubarraySum(arr, num){
+    let maxSum = 0;
+    let tempSum = 0;
+    if (arr.length < num) return null;
+    for (let i = 0; i < num; i++) {
+      maxSum += arr[i];
+    }
+    tempSum = maxSum;
+    for (let i = num; i < arr.length; i++) {
+      tempSum = tempSum - arr[i - num] + arr[i];
+      maxSum = Math.max(maxSum, tempSum);
+    }
+    return maxSum;
+  }
+
+  
+  Me again...
+
+  Divide and Conquer 
+
+  - This pattern involves dividing a data set into smaller chunks and then repeating a process with a subset of data.
+  - This pattern can tremendously decrease time complexity
+
+  An Example
+
+  - Given a sorted array of integers, write a function called search, that accepts a value and returns the index where the value passed to the function is located. If the value is not found, return -1
+
+  search([1,2,3,4,5,6],4) // 3
+  search([1,2,3,4,5,6],6) // 5
+  search([1,2,3,4,5,6],11) // -1
+
+  A naive solution: Linear Search: Time Complexity O(N)
+
+  function search(arr, val){
+    for(let i = 0; i < arr.length; i++){
+        if(arr[i] === val){
+            return i;
+        }
+    }
+    return -1;
+  }
+  
+  Refactor: Time Complexity - Log(N) - Binary Search!
+
+  function search(array, val) {
+ 
+    let min = 0;
+    let max = array.length - 1;
+ 
+    while (min <= max) {
+        let middle = Math.floor((min + max) / 2);
+        let currentElement = array[middle];
+ 
+        if (array[middle] < val) {
+            min = middle + 1;
+        }
+        else if (array[middle] > val) {
+            max = middle - 1;
+        }
+        else {
+            return middle;
+        }
+    }
+ 
+    return -1;
+  }
+
+  
+  Recap
+
+  - Developing a problem solving approach is incredibly important
+  - Thinking about code before writing code will always make you solve problems faster
+  - Be mindful about problem solving patterns
+  - Using frequency counters, multiple pointers, sliding window and divide and conquer will help you reduce time and space complexity and help solve more challenging problems
+  
+######################################################################################################################################################################
+
+  
+  Curso 14 Mini JS Projects
+  
+  Link Github: https://github.com/LondonComputadores/data-structure-algo-practicings/blob/main/js-all/curso-js-14-projects/aula.js
+  
+    Start here:
+
+	console.log('Alexandre Paes')
+
+	let idade = 5
+	console.log('idade: ', idade)
+
+	let enderecoAluno = 'Avenida Principal'
+	let idadeAluno = 15
+	let nomeDaMae = 'Mae do Aluno'
+
+	dados = [
+	enderecoAluno,
+	idadeAluno,
+	nomeDaMae,
+	outros = {professora: 'Maria'},
+	professor = 'Carlos'
+	]
+
+	console.log(dados)
+
+	let diretora = {
+	nome: 'Regina',
+	escola: 'Dolor'
+	}
+	console.log(diretora)
+
+	// %c Applies CSS style rules to the output string as specified by the second parameter
+
+	console.log('%cHello world!', 'color: blue; font-size: xx-large')
+
+	const valorIngressoAdulto = 20
+	console.log(valorIngressoAdulto)
+
+	const fruits = ['apple', 'banana', 'orange']
+	for (let i = 0; i < fruits.length; i++) {
+	console.log(fruits[i])
+	}
+
+
+	let idadePessoa = 1
+	if (idadePessoa <= 0){
+	idadePessoa += 2
+	console.log(idadePessoa)
+	}
+	else
+	console.log('Could not identify')
+
+
+	let i = 0
+	if (i < 1) {
+	console.log("i is smaller than 1");
+	} else {
+	console.log("i was not smaller than 1");
+	}
+
+
+	let idadeBebe = 10
+	while (idadeBebe >= 5){
+	console.log(idadeBebe)
+	idadeBebe--
+	}
+
+
+	// function names === Verbo + Substantivo
+	let corSite = 'azul'
+	function resCor(){
+	corSite = ''
+	}
+	console.log(corSite)
+	resCor()
+	console.log(corSite)
+
+
+	let barkDogColor = 'white'
+	function resetColor(color, intensity){
+	barkDogColor = color + ' ' + intensity
+	}
+	console.log(barkDogColor)
+	resetColor('blue','and green')
+	console.log(barkDogColor)
+
+
+	function sayMyName(){
+	console.log('Alexandre')
+	}
+	sayMyName()
+
+
+	function multiplyByTwo(num){
+	return num * 2 + ' contos'
+	}
+	let result = multiplyByTwo(10)
+	console.log(result)
+
+
+	let pontos = 200
+	let tipo = pontos > 100 ? 'Premium' : 'Basic'
+	console.log(tipo)
+
+
+	console.log(true && true)
+
+	let maiorDeIdade = true
+	let possuiCarteiraDeTrabalho = false
+	let elegível = maiorDeIdade && possuiCarteiraDeTrabalho
+	let podeAplicar = maiorDeIdade || possuiCarteiraDeTrabalho
+	candidatoRecusado = !podeAplicar
+
+	console.log(elegível)
+	console.log(podeAplicar)
+	console.log(candidatoRecusado)
+
+	//personalizedColor = 'green'
+	personalizedColor = ''
+	defaultColor = 'yellow'
+	primeColor = personalizedColor || defaultColor
+
+	console.log(primeColor)
+
+	let a = 'A1'
+	let b = 'B2'
+
+	console.log(a)
+	console.log(b)
+
+	// Minha tentativa baseado em Python
+	// a, b = 'B2', 'A2'
+	// a2 = a
+	// b2 = b
+
+	// console.log(a2)
+	// console.log(b2)
+
+	// Solução p trocar valores entre variáveis
+
+	let c = a
+	a = b
+	b = c
+
+	console.log(a)
+	console.log(b)
+
+	let hora = 22
+
+	if (hora > 5 && hora < 12) {
+	console.log('Bom dia!')
+	}
+	else if (hora > 12 && hora < 18) {
+	console.log('Boa tarde!')
+	}
+	else {
+	console.log('Boa noite!')
+	}
+
+
+	let permissao = 'diretor'
+
+	switch (permissao) {
+	case 'comum':
+	console.log('usuário comum')
+	break
+
+	case 'gerente':
+	console.log('usuário gerente')
+	break
+
+	case 'diretor':
+	console.log('usuário diretor')
+	break
+
+	default:
+	console.log('usuário não cadastrado.')
+	}
+
+	for (let i = 5; i >= 1; i--) {
+	if (i % 2 !== 0) {
+	console.log(i)
+	}
+	}
+
+	let indice = 5
+	while (indice >= 1) {
+	if (indice % 2 !== 0) {
+	console.log(indice)
+	}
+	indice--
+	}
+
+	let n = 0
+
+	do {
+	console.log('digitando...')
+	//console.log('digitando...', n)
+	n++
+	} while (n < 10)
+
+	const pessoa = {
+	nome: 'Alex',
+	idade: 38
+	}
+
+	for(let chave in pessoa) {
+	//console.log(pessoa.nome)
+	//console.log(pessoa.idade)
+	//console.log(pessoa)
+	console.log(chave, pessoa[chave])
+	}
+
+	const colors = ['blue', 'yellow', 'green']
+
+	for (let c in colors) {
+	console.log(c, colors[c])
+	}
+
+
+	// Exercício: Escreva uma função que contenha 2 números e retorna o maior entre eles!
+
+	function minMaxNum(){
+	let num1 = 1
+	let num2 = 2
+	if (num1 > num2) {
+	console.log('num1 is the max num.')
+	}
+	else {
+	console.log('num2 is the max num.')
+	}
+	}
+	minMaxNum()
+
+	// A mesma função da de cima mas em arrow function
+
+	let minMaxNumVar = () => {
+	let num1 = 4
+	let num2 = 2
+	if (num1 > num2) {
+	console.log('num1 is the max num.')
+	}
+	else {
+	console.log('num2 is the max num.')
+	}
+	}
+	console.log(minMaxNumVar())
+
+	// Solução do professor para o exercício imediato acima
+
+	let valorMaior = max(10, 5)
+	console.log(valorMaior)
+
+	function max(numero1, numero2){
+	if (numero1 > numero2)
+	return numero1
+	else return numero2
+	}
+
+	// Exemplo função 2
+	function max(numero1, numero2){
+	if (numero1 > numero2)
+	return numero1
+	return numero2
+	}
+
+	// Exemplo função 3
+	function max(numero1, numero2){
+	return numero1 > numero2 ? numero1 : numero2
+	}
+
+
+	// Exercício fizzbuzz:
+	// Divisível por 3 === fizz
+	// Divisível por 5 === buzz
+	// Divisível por 3 e 5 === fizzbuzz
+	// Divisível por 3 ou 5 === num
+	// Divisível por nenhum = 'Não Divisível'
+
+	let num = 35 //prompt('Digite a number here: ')
+
+	// FizzBuzz com switch não funciona/funcionou
+
+	// switch (num) {
+	//   case num % 3 === 0 && num % 5 === 0:
+	//     console.log('fizzbuzz')
+	//     break
+
+	//     case num % 5 === 0:
+	//       console.log('buzz')
+	//       break
+
+	//     case num % 3 === 0:
+	//       console.log('fizz')
+	//       break
+
+	//     case num % 3 === 0 || num % 5 === 0:
+	//       console.log(num)
+	//       break
+
+	//     default: console.log('Não divisível.')
+	// }
+
+	// FizzBuzz com if else
+
+	if (num % 3 === 0 && num % 5 === 0){
+	console.log('fizzbuzz')
+	} 
+	// else if (num % 3 === 0 || num % 5 === 0) {
+	//   console.log(num)
+	// }
+	else if (num % 3 === 0 ) {
+	console.log('fizz')
+	}
+	else if (num % 5 === 0) {
+	console.log('buzz')
+	}
+	else {
+	console.log('Non divisible.')
+	}
+
+	// FizzBuzz Solução do Professor:
+
+	const resultado = fizzBuzz(3)
+	console.log(resultado)
+
+	function fizzBuzz(entrada){
+	if (typeof entrada !== 'number')
+	return 'Não é número.'
+	if((entrada % 3 === 0) && (entrada % 5 === 0))
+	return 'FizzBuzz'
+	if (entrada % 3 === 0)
+	return "Fizz"
+	if (entrada % 5 === 0)
+	return 'Buzz'
+	return entrada
+	}
+
+
+	// Exercicio verificar velocidade
+
+	// Velocidade max de 70
+	// Cada 5km acima do limite ganha 1 ponto
+	// Utilizar Math.Floor() para arredondar números
+	// Caso pontos maior que  12 = 'Carteira Suspensa'
+
+	verificarVelocidade(120)
+
+	function verificarVelocidade(velocidade) {
+	const velocidadeMaxima = 70
+	const kmPorPonto = 5
+	if (velocidade <= velocidadeMaxima)
+	console.log('Ok!')
+	else {
+	const pontos = Math.floor(((velocidade - velocidadeMaxima) / kmPorPonto))
+	if(pontos >= 12)
+	console.log('Carteira Suspensa.')
+	else
+	console.log('Pontos: ', pontos)
+	}
+	}
+
+
+	// Exercício Par ou Ímpar
+
+	// Receber uma quantidade de valores para avaliar
+	// função exibe se cada valor é par ou ímpar
+
+	exibirTipo(5)
+
+	function exibirTipo(limite) {
+	for (let i = 0; i < limite; i++) {
+	if (i % 2 === 0)
+	console.log(i, 'Par')
+	else
+	console.log(i, 'Ímpar')
+	}
+	}
+
+
+	// Criar um método para ler propriedades de um objeto e exibir
+	// somente as propriedades que são do tipo string nesse objeto
+
+	const filme = {
+	título: 'Vingadores',
+	ano: 2018,
+	diretor: 'Robin Fake',
+	personagem: 'Thor'
+	}
+	exibirPropriedades(filme)
+	function exibirPropriedades(obj) {
+	for (prop in obj)
+	if (typeof obj[prop] === 'string')
+	console.log(prop, obj[prop])
+	}
+
+	// Exercício Soma Múltiplus de 3 e 5
+
+	// Criar a função somar que retorna a soma de todos os
+	// múltiplos de 3 e 5
+
+	// Multiplos de 3: 3, 6, 9...
+	// Multiplos de 5: 5, 10, 15...
+
+	// Armazenar os multiplos de 3
+	// Armazenar os multiplos de 5
+	// somar os dois
+
+	somar(10)
+	function somar(limite) {
+	let multiplosDe3 = 0
+	let multiplosDe5 = 0
+	for (i = 0; i <= limite; i++) {
+	if (i % 3 === 0)
+	multiplosDe3 += i
+	if (i % 5 === 0)
+	multiplosDe5 += i
+	}
+	console.log(multiplosDe3 + multiplosDe5)
+	}
+
+
+	// Exercício Nota Escolar
+
+	// Obter a média a partir de um array
+	// 0-59: E
+	// 60-69: D
+	// 70-79: C
+	// 80-89: B
+	// 90-100: A
+
+	const array = [70, 70, 80]
+	// 75
+
+	function mediaDoAluno(notas) {
+	const media = calcularMedia(notas)
+
+	if (media < 59) return 'E'
+	if (media < 69) return 'D'
+	if (media < 79) return 'C'
+	if (media < 89) return 'B'
+	return 'A'
+	}
+
+	function calcularMedia(array) {
+	let soma = 0
+	for (let valor of array) {
+	soma += valor
+	}
+	return soma / (array.length)
+	}
+
+	console.log(mediaDoAluno(array))
+
+
+	// Criar uma função que exibe a quantidade de Asteriscos (*)
+	// que cada linha possui
+
+	function exibirAsteriscos(linhas) {
+	// let padrao = ''
+	// for (let linha = 1; linha <= linhas; linha++){
+	//   padrao += '*'
+	//   console.log(padrao)
+	// }
+
+	// Exemplo 2
+	for(let linha = 1; linha <= linhas; linha++){
+	let padrao = ''
+	for(let i = 0; i < linha; i++){
+	padrao += '*'
+	}
+	console.log(padrao)
+	}
+	}
+	exibirAsteriscos(5)
+
+
+	// Exercício: Criar uma função que exiba números primos (divisível por 1 ou por ele mesmo apenas)
+
+	// 11 = número primo (divisível por 1 e 11 apenas)
+	// 10 = número composto (divisível por 1, 2, 5, 10)
+
+	exibirNumerosPrimos(10);
+
+	// function exibirNumerosPrimos(limite){
+	//   for(let num = 2; num <= limite; num++){
+	//     let ehPrimo = true;
+	//     for(let divisor = 2; divisor < num; num++){
+	//       if(num % divisor === 0){
+	//         ehPrimo = false;
+	//         break;
+	//       }
+	//     }
+	//     if (ehPrimo) console.log(num);
+	//   }
+	// }
+
+	// Exemplo 2 exibirNumerosPrimos
+
+	function exibirNumerosPrimos(limite){
+	for(let num = 2; num <= limite; num++){
+	if(NumeroPrimo(num)) console.log(num)
+	}
+	}
+
+	function NumeroPrimo(num){
+	for(let divisor = 2; divisor < num; divisor++){
+	if(num % divisor === 0){
+	return false;
+	}
+	//return true; // returns 3,5,7,9
+	}
+	return true; // returns 2,3,5,7 correctly
+	}
+
+	// Factory functions
+
+	const celular = {
+	marcaCelular: 'ASUS',
+	tamanhoTela: {
+	vertical: 155,
+	horizontal: 75
+	},
+	capacidadeDaBateria: 5000,
+	ligar: function () {
+	console.log('Fazendo ligação...')
+	}
+	}
+	console.log(celular)
+	console.log(celular.ligar)
+	celular.ligar()
+
+	// Exemplo 2: Refatorado
+
+	function criarCelular(
+	marcaCelular,
+	tamanhoTela,
+	capacidadeDaBateria
+	) {
+	return {
+	marcaCelular,
+	tamanhoTela,
+	capacidadeDaBateria,
+	religar() {
+	console.log('Rediscando...')
+	}
+	}
+	}
+	const celularDois = criarCelular('Moto-G5',5,3000,criarCelular().religar())
+	console.log(celularDois)
+	criarCelular().religar()
+
+	// Constructor functions
+
+	//PascalCase
+	function Celular(
+	marcaCelular,
+	tamanhoTela,
+	capacidadeDaBateria
+	) {
+	this.marcaCelular = marcaCelular,
+	this.tamanhoTela = tamanhoTela,
+	this.capacidadeDaBateria = capacidadeDaBateria,
+	this.atende = function() {
+	console.log('Atende pow!')
+	}
+	}
+	const mobile = new Celular('iPobre',4,2000)
+	console.log(mobile)
+	mobile.atende()
+
+	// Natueza Dinâmica de Objetos
+
+	const mouse = {
+	cor: 'yellow',
+	marca: 'multilaser'
+	}
+	mouse.velocidade = 5000
+	mouse.trocarDPI = function(){
+	console.log('mudando DPI')
+	}
+	//delete mouse.velocidade
+	//delete mouse.trocarDPI
+
+	console.log(mouse)
+
+	// Clonando Objetos sem e com spread...
+
+	// Reutilizar o objeto acima, mouse
+
+	const novoObjeto = Object.assign({
+	teclado: 'mecanico'
+	}, mouse)
+	console.log(novoObjeto)
+
+	const obj = {...mouse, tela: 'Dell 23 inchs'}
+	console.log(obj)
+
+	const obj2 = {...novoObjeto, tela: 'Dell 23 inchs'}
+	console.log(obj2)
+
+	// Math
+
+	// https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Math/max
+
+	a = Math.random()
+	console.log(a)
+
+	let numMax = [1,3,5,7]
+	let max2 = Math.max(...numMax)
+	console.log(max2)
+
+	let numMin = [1,3,5,7]
+	let min2 = Math.min(...numMin)
+	console.log(min2)
+
+
+	// String methods
+
+	// Tipo primitivo
+	const mensagem = 'uma primeira msg '
+	// Tipo objeto
+	const outraMensagem = new String('Bom dia')
+
+	console.log(typeof mensagem + ' here')
+	console.log(typeof outraMensagem)
+
+	console.log(outraMensagem.length)
+	console.log(outraMensagem[0])
+	console.log(mensagem.includes('again'))
+	console.log(mensagem.includes('msg'))
+	console.log(mensagem.startsWith('uma'))
+	console.log(mensagem.endsWith('tang'))
+	console.log(mensagem.indexOf('primeira'))
+	console.log(mensagem.replace('primeira', 'segunda'))
+	console.log(mensagem.trim())
+	console.log(mensagem.split(" "))
+
+
+	// Template Literal = ``
+	// object = {}
+	// string = '', ""
+	// boolean = true, false
+
+	let nomme = 'Alex'
+	let idadde = 39
+
+	const msg = `Isso é uma msg para ${nomme}
+	e sua idade é ${idadde}
+	e essa msg usa template literal 
+	para não precisar de usar 'scape \n nem' outros tipos de concatenações que poluem
+	a leitura do código.'`
+
+	console.log(msg)
+
+
+	// Date formats
+
+	const data1 = new Date()
+	console.log(data1)
+
+	const data2 = new Date('May 14 2022 09:43')
+	console.log(data2)
+	data2B = data2.toTimeString()
+	console.log(data2B)
+
+	const data3 = new Date(2022,04,14,9,51)
+	console.log(data3)
+	data3B = data3.toDateString()
+	console.log(data3B)
+
+	data3C = data3.toISOString()
+	console.log(data3C)
+
+	// ??? não funcionou como esperado
+	data4 = data2.setFullYear(2030)
+	console.log(data4)
+
+
+
+	// Exercício Montando Endereço
+
+	// Criar um objeto endereço que contém:
+	// Rua; Cidade; CEP; e uma função exibirEndereco(endereco)
+
+	const enderecoCliente = {
+	rua: 'Av O Daros',
+	cidade: 'cg',
+	cep: 70000000,
+	exibirEndereco() {
+	console.log({enderecoCliente})
+	}
+	}
+	enderecoCliente.exibirEndereco()
+
+	console.log('-----*------------*-----')
+
+	// Solução do professor
+
+	let endereco = {
+	rua: 'a',
+	cidade: 'b',
+	cep: 1
+	};
+
+	function exibirEndereco(endereco) {
+	for (let chave in endereco)
+	console.log(chave, endereco[chave]);
+	}
+
+	exibirEndereco(endereco);
+
+
+
+	// Exercício Encontre a Igualdade
+
+	function Endereco(rua, cidade, cep){
+	this.rua,
+	this.cidade,
+	this.cep
+	}
+	const endereco1 = new Endereco('a','b','c');
+	const endereco2 = new Endereco('a','b','c');
+	//const endereco3 = endereco1
+
+	function saoIguais(endereco1, endereco2) {
+	//comparar as propriedades
+	return endereco1.rua === endereco2.rua && 
+	endereco1.cidade === endereco2.cidade &&
+	endereco1.cep === endereco2.cep
+	}
+	console.log(saoIguais(
+	endereco1, endereco2
+	));
+
+
+	function temEnderecoMemIguais(endereco1, endereco2){
+	// comparar referência do objeto na memória
+	return endereco1 === endereco2;
+	//return endereco1 === endereco3;
+	}
+	console.log(temEnderecoMemIguais(
+	endereco1, endereco2
+	));
+
+
+	// Exercício Objeto Pubicacao de Blog
+	// Criar um objeto de publicação de blog com os seguintes requisitos:
+	// título; msg; visualizacoes; comentários(auto, msg); on/offline
+
+	let pub = {
+	titulo: 'a',
+	msg: 'b',
+	autor: 'c',
+	viu: 10,
+	comentarios: [
+	{autor: 'a', msg: 'b'},
+	{autor: 'a', msg: 'b'}
+	],
+	estaOnline: true
+	}
+	console.log(pub)
+
+	// Exercício Constructor function
+	// Criar um objeto publ com params acima
+
+	// função Construtor c inicial Maiúscula
+	function Publ(titulo, msg, autor){
+	this.titulo = titulo,
+	this.msg = msg,
+	this.autor = autor,
+	this.viu = 11,
+	this.comentarios = [],
+	this.estaOnline = false
+	}
+	let publ = new Publ('a', 'b', 'c')
+	console.log(publ)
+
+	// Exercício Faixa de Preço
+	// Criar um array de objetos de faixa de preços
+
+	let faixas = [
+	{cadeira: 'até 700', mínimo: 0, máximo: 700},
+	{cadeira: 'de 701 a 1k', mínimo: 701, máximo: 1000},
+	{cadeira: '1,001k ou mais', mínimo:1001, máximo: 999999}
+	]
+	console.log(faixas)
+
+	// Solução 2:
+
+	function criarFaixaDePreco(tooltip, mínimo, máximo){
+	return {
+	tooltip,
+	mínimo,
+	máximo,
+	}
+	}
+	let faixas2 = [
+	criarFaixaDePreco('a', 1, 100),
+	criarFaixaDePreco('b', 101, 1000),
+	criarFaixaDePreco('c', 1001, 10000)
+	]
+	console.log(faixas2)
+
+	// Solução 3:
+
+	function FaixaPreco(tooltip, mínimo, máximo) {
+	this.tooltip = tooltip,
+	this.mínimo = mínimo,
+	this.máximo = máximo
+	}
+
+	let faixas3 = [
+	new FaixaPreco('d',10,20),
+	new FaixaPreco('d',10,20),
+	new FaixaPreco('d',10,20)
+	]
+	console.log(faixas3)
+
+	// Introdução a Arrays
+
+
+	// Add new elements
+	// Find elements
+	// Remove elements
+	// Divide elements
+	// Divide Arrays
+	// Combine Arrays
+
+	const nums = [1,2,3]
+
+	nums.unshift(0)  //begin
+	console.log(nums)
+	nums.splice(0,1,'a')  //middle
+	console.log(nums)
+	nums.push(5)  //end
+	console.log(nums)
+	nums.indexOf(1)
+	console.log(nums)
+
+	console.log(nums.indexOf(2) !== -1)
+	console.log(nums.includes(4))
+
+	// Removendo elementos de um array
+	nums.shift(0)  //begin
+	console.log(nums)
+	nums.splice(2,1)  //middle
+	console.log(nums)
+
+	console.log(nums.pop()) // end
+
+	const marcas = [
+	{id: 1, nome: 'a'},
+	{id: 2, nome: 'b'}
+	]
+
+	const marca = marcas.find(function(marca){
+	return marca.nome === 'a'
+	})
+	console.log(marca)
+
+	// Arrow functions
+	// Reutilizando const marcas acima
+
+	console.log(marcas.find((marca) => marca.nome === 'b'))
+
+	// Esvaziando umm Array
+
+	const nums2 = [1,2,3,4,5,6]
+
+	nums2.length = 0
+	console.log(nums2)
+
+	// Combinar e dividir arrays
+	// Funciona somente para números primos/memória e não para objetos/referências
+
+	const primeiro = [1,2,3]
+	const segundo = [4,5,6]
+
+	const combinado = primeiro.concat(segundo)
+	console.log(combinado)
+
+	const dividido = combinado.slice()
+	console.log(dividido)
+
+	// Spread Operator
+
+	const combinadoSpread = [...primeiro,  'a',...segundo, 22]
+	console.log(combinadoSpread)
+
+	const clonado = [...combinadoSpread]
+	console.log(clonado)
+
+	// Iterando Arrays with Foreach
+
+	clonado.forEach((n,i) => console.log(n,i))
+
+	// Join
+
+	const juntado = clonado.join('-')
+	console.log(juntado)
+
+	// Split
+
+	console.log(juntado.split(' '))
+
+
+
+
+	######################################################
+
+
+

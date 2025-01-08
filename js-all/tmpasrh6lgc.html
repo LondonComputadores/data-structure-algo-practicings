@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pomodoro App</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f3f4f6;
+    }
+    .timer-container {
+      text-align: center;
+    }
+    button {
+      padding: 8px 16px;
+      margin: 0 4px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="timer-container">
+    <h1>Pomodoro Timer</h1>
+    <p>Work Period: <span id="workTime">25:00</span></p>
+    <p>Break Period: <span id="breakTime">5:00</span></p>
+    <button id="startBtn" onclick="startTimer()">Start</button>
+    <button id="resetBtn" onclick="resetTimer()">Reset</button>
+  </div>
+  <script>
+    let workDuration = 25 * 60; // 25 minutes in seconds
+    let breakDuration = 5 * 60; // 5 minutes in seconds
+    let timer = null;
+    let isRunning = false;
+    let isBreakTime = false;
+
+    function startTimer() {
+      if (!isRunning) {
+        isRunning = true;
+        timer = setInterval(updateTimer, 1000);
+        document.getElementById('startBtn').textContent = 'Pause';
+      } else {
+        isRunning = false;
+        clearInterval(timer);
+        document.getElementById('startBtn').textContent = 'Start';
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timer);
+      isRunning = false;
+      isBreakTime = false;
+      workDuration = 25 * 60; // 25 minutes in seconds
+      breakDuration = 5 * 60; // 5 minutes in seconds
+      document.getElementById('workTime').textContent = formatTime(workDuration);
+      document.getElementById('breakTime').textContent = formatTime(breakDuration);
+      document.getElementById('startBtn').textContent = 'Start';
+    }
+
+    function updateTimer() {
+      if (isBreakTime) {
+        if (breakDuration > 0) {
+          breakDuration--;
+          document.getElementById('breakTime').textContent = formatTime(breakDuration);
+        } else {
+          isBreakTime = false;
+          breakDuration = 5 * 60; // Reset break duration
+          document.getElementById('breakTime').textContent = formatTime(breakDuration);
+          clearInterval(timer);
+          document.getElementById('startBtn').textContent = 'Start';
+        }
+      } else {
+        if (workDuration > 0) {
+          workDuration--;
+          document.getElementById('workTime').textContent = formatTime(workDuration);
+        } else {
+          isBreakTime = true;
+          workDuration = 25 * 60; // Reset work duration
+          document.getElementById('workTime').textContent = formatTime(workDuration);
+          clearInterval(timer);
+          document.getElementById('startBtn').textContent = 'Start';
+        }
+      }
+    }
+
+    function formatTime(seconds) {
+      let minutes = Math.floor(seconds / 60);
+      let remainingSeconds = seconds % 60;
+      return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+    }
+  </script>
+</body>
+</html>

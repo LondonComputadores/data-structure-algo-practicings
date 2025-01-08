@@ -26,7 +26,7 @@ def enumerate_services(ports):
       # TODO: Verifique se a porta existe no dicionário de serviços
       if port in port_services:
           
-            # TODO: Se existir, adicione o serviço correspondente à lista de serviços
+        # TODO: Se existir, adicione o serviço correspondente à lista de serviços
         services.append(port_services[port])
         """
             Como parâmetro do append eu errei em não tentar
@@ -35,7 +35,7 @@ def enumerate_services(ports):
             o que não passou nos testes.
         """
           
-            # TODO: Se a porta não estiver mapeada, adicione "Desconhecido"
+      # TODO: Se a porta não estiver mapeada, adicione "Desconhecido"
       else:
         services.append('Desconhecido')
         
@@ -45,13 +45,13 @@ def enumerate_services(ports):
 # Função principal que lida com a entrada do usuário e exibe o resultado:
 def main():
     ports_input = input().strip()
-    print(ports_input)
+    # print(ports_input)
     
     # TODO: Converta a string de entrada para uma lista de inteiros (números de portas)
     # Utilize a função strip() para remove espaços em branco, e o split() para separar por vírgula
     # ports_strip = ports_input.strip()
     ports = ports_input.split(',')
-    print(ports)
+    # print(ports)
     # TODO: Chame a função de enumeração para obter a lista de serviços correspondentes:
     services = enumerate_services(ports)
     
