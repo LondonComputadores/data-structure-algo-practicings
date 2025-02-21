@@ -1,10 +1,10 @@
-package me.sekayasin;
+// package me.sekayasin;
 
 public class Question2sumEvenOdd {
 
-    public static void main(String[] args) {
-        System.out.println(sumEvenOdd(new int[]{1,2,3,4}));
-    }
+    // public static void main(String[] args) {
+    //     System.out.println(sumEvenOdd(new int[]{1,2,3,4}));
+    // }
 
     static int sumEvenOdd(int[] items) {
         int sumEven = 0;
